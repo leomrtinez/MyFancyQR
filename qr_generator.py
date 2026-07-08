@@ -267,8 +267,8 @@ def main():
         "--logo",
         type=str,
         default=None,
-        help="Path to the logo image to include in the QR code (default: None)", 
-        choices=list(AVAILABLE_LOGOS.keys())
+        help="Path to the logo image to include in the QR code (default: None)"
+        
     )
 
     parser.add_argument(
@@ -313,6 +313,11 @@ def main():
     if not args.output:
         parser.error("the 'output' argument is required")
 
+    if args.back_color == "black" and args.pixel_color == "black":
+        args.pixel_color = "white"
+
+    if args.back_color == "white" and args.pixel_color == "white":
+            args.back_color = "black"
 
     if not args.logo:
         generate_qrcode_without_logo(args.url, args.output, fmt, args.box_size, args.border_width, args.back_color, args.pixel_color)

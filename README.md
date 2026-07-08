@@ -76,6 +76,13 @@ pip install qrcode[pil] matplotlib
 | `-pc`, `--pixel-color`       | `black`  | Pixel color for the QR code (choice between all matplotlib [colors](https://matplotlib.org/stable/gallery/color/named_colors.html)) |
 |
 
+**Note:** if `back-color` is defined as black, `pixel-color` will automatically
+be set to white unless you specify otherwise (e.g. `-pc limegreen`). Likewise,
+if you specify `pixel-color` as white without specifying `back-color`,
+`back-color` will automatically be set to black.
+
+
+
 ## 🚀 Usage
 
 ```bash
