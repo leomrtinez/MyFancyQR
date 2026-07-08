@@ -1,0 +1,10 @@
+# We ignore all the possible outputs 
+*.png
+*.pdf
+*.svg
+*.jpg
+*.jpeg
+*.bmp
+*.webp
+*.tiff
+*.eps
