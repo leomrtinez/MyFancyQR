@@ -108,27 +108,28 @@ python qr_generator.py https://example.com --format pdf --box-size 15 --border-w
 ```bash
 python qr_generator.py https://example.com example/basic
 ```
-![Basic QR code](example/basic.png)
+<img src="example/basic.png" alt="Basic QR code" width="300">
 
 
 **Colored QR code**
 ```bash
 python qr_generator.py https://example.com example/basic_colored -bc orange -pc red
 ```
-<img src="example/basic_colored.png" alt="Colored QR code" width="50">
+<img src="example/basic_colored.png" alt="Colored QR code" width="300">
 
 **QR code with logo**
 ```bash
 python qr_generator.py https://example.com example/logo -l Github 
 ```
-![QR code with logo](example/leomrtinez.png)
+
+<img src="example/leomrtinez.png" alt="QR code with logo" width="300">
+
 
 **QR code with logo (inversed colors)**
 ```bash
 python qr_generator.py https://en.wikipedia.org/wiki/QR_code example/qr_code_wiki_r --logo ./logo/Wikipedia.png -bc black
 ```
-![Basic QR code](example/qr_code_wiki_r.png)
-
+<img src="example/qr_code_wiki_r.png" alt="QR code with logo inversed" width="300">
 
 ### About Logo Add-ons
 
