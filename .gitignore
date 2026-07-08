@@ -7,3 +7,7 @@
 *.webp
 *.tiff
 *.eps
+
+
+._*
+.DS_Store
