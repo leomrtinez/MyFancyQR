@@ -73,7 +73,7 @@ pip install qrcode[pil] matplotlib
 | `-bw`, `--border-width`     | `1`      | Width of the white border surrounding the QR code                    |
 | `-bs`, `--box-size`         | `25`     | Size (in pixels) of each box/module of the QR code                   |
 | `-bc`, `--back-color`       | `white`  | Background color for the QR code (choice between all matplotlib [colors](https://matplotlib.org/stable/gallery/color/named_colors.html))  |
-| `-fc`, `--fill-color`       | `black`  | Fill color for the QR code (choice between all matplotlib [colors](https://matplotlib.org/stable/gallery/color/named_colors.html)) |
+| `-pc`, `--pixel-color`       | `black`  | Pixel color for the QR code (choice between all matplotlib [colors](https://matplotlib.org/stable/gallery/color/named_colors.html)) |
 |
 
 ## 🚀 Usage
@@ -92,7 +92,7 @@ python qr_generator.py https://example.com file_name --format pdf
 python qr_generator.py --list-formats
 
 # Other options
-python qr_generator.py https://example.com --format pdf --box-size 15 --border-width 1 file_name
+python qr_generator.py https://example.com --format pdf --box-size 15 --border-width 1 --back-color black --pixel-color white  file_name
 
 ```
 

@@ -280,11 +280,11 @@ def main():
     )
 
     parser.add_argument(
-        "-fc",
-        "--fill-color",
+        "-pc",
+        "--pixel-color",
         type=str,
         default="black",
-        help="Fill color for the QR code (default: black)"
+        help="Pixel color for the QR code (default: black)"
     )
 
 
@@ -315,9 +315,9 @@ def main():
 
 
     if not args.logo:
-        generate_qrcode_without_logo(args.url, args.output, fmt, args.box_size, args.border_width, args.back_color, args.fill_color)
+        generate_qrcode_without_logo(args.url, args.output, fmt, args.box_size, args.border_width, args.back_color, args.pixel_color)
     else:
-        generate_qrcode_with_logo(args.url, args.output, fmt, args.box_size, args.border_width, args.logo, args.back_color, args.fill_color)
+        generate_qrcode_with_logo(args.url, args.output, fmt, args.box_size, args.border_width, args.logo, args.back_color, args.pixel_color)
 
 
 
