@@ -71,23 +71,47 @@ pip install qrcode[pil]
 | `-bw`, `--border-width`     | `1`      | Width of the white border surrounding the QR code                    |
 | `-bs`, `--box-size`         | `25`     | Size (in pixels) of each box/module of the QR code                   |
 
+
+
 ## 🚀 Usage
 
 ```bash
+# The most simple way to use it. If no output is specified, the default file_name is qrcode
+python qr_generator.py https://example.com
+
+# Standard generation. If no format is specified (neither via extension nor option), the defaults format will be set to .jpg
+python qr_generator.py https://example.com file_name
+
+# Force a format different from the extension
+python qr_generator.py https://example.com file_name --format pdf
+
 # See available formats
 python qr_generator.py --list-formats
 
-# Standard generation (format inferred from the extension)
-python qr_generator.py "https://example.com" file_name.pdf
-
-# Force a format different from the extension
-python qr_generator.py "https://example.com" file_name --format pdf
-
-# If no format is specified (neither via extension nor option), the output defaults to .png
-python qr_generator.py "https://example.com" file_name
-
 # Other options
-python qr_generator.py "https://example.com" --format pdf --box-size 15 --border-width 1 file_name
+python qr_generator.py https://example.com --format pdf --box-size 15 --border-width 1 file_name
+
+```
+
+### About logo add-ons:
+MyFancyQR enable you to add your logo in the middle of the QR code. Few logos exists in the `./logo` repository
+If you want to add one of them (easy), just use the function as follow : 
+
+```bash
+# See available logos
+python qr_generator.py --help
+
+# For example, if you want to generate a QR code for Github page: 
+python qr_generator.py https://github.com/user/repo --logo Github
+
+```
+
+Otherwise just add the path to your logo: 
+
+```bash
+# For example, if you want to generate a QR code for a wikipedia page: 
+python qr_generator.py https://en.wikipedia.org/wiki/QR_code --logo /Volumes/My_Disk/Images/logo_wikipedia.png file_name
+
 ```
 
 ## 🤝 Contributing
