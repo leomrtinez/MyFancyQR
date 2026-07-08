@@ -102,6 +102,34 @@ python qr_generator.py https://example.com --format pdf --box-size 15 --border-w
 
 ```
 
+### 🖼️ Gallery
+
+**Basic QR code**
+```bash
+python qr_generator.py https://example.com example/basic
+```
+![Basic QR code](example/basic.png)
+
+
+**Colored QR code**
+```bash
+python qr_generator.py https://example.com example/basic_colored -bc orange -pc red
+```
+![Colored QR code](example/basic_colored.png)
+
+**QR code with logo**
+```bash
+python qr_generator.py https://example.com example/logo -l Github 
+```
+![QR code with logo](example/leomrtinez.png)
+
+**QR code with logo (inversed colors)**
+```bash
+python qr_generator.py https://en.wikipedia.org/wiki/QR_code example/qr_code_wiki_r --logo ./logo/Wikipedia.png -bc black
+```
+![Basic QR code](example/qr_code_wiki_r.png)
+
+
 ### About Logo Add-ons
 
 MyFancyQR allows you to embed a logo in the center of your QR code. Several ready-to-use logos are available in the `./logo` directory.
