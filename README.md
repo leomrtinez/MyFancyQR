@@ -1,4 +1,4 @@
-# 🔳 MyFancyQR
+# 📷 MyFancyQR
 
 MyFancyQR is a lightweight command-line tool that generates QR codes from any text or URL, with support for multiple output formats (PNG, SVG, PDF, JPEG, and more) and customizable styling options.
 
@@ -33,34 +33,43 @@ cd MyFancyQR
 
 ### Requirements
 
+
 If you already have a Conda environment:
+<details>
+<summary>🐍 Using Conda</summary>
+
+You will need the following packages:
 
 ```bash
 conda install conda-forge::qrcode
+conda install anaconda::pillow
 ```
+</details>
 
-Otherwise, your Python environment will need the following dependency:
 
-|     Name     |    Version   |
-|--------------|--------------|
-| `qrcode`     | 8.2          |
 
-You can also install it via pip:
+
+Otherwise you can also install it via pip:
+
+<details>
+<summary>📦 Using pip</summary>
 
 ```bash
 pip install qrcode[pil]
 ```
+</details>
 
 ## ⚙️ Configuration
 
-| Argument                   | Default  | Description                                              |
-|-----------------------------|----------|-----------------------------------------------------------|
-| `url`                       | –        | Text or URL to encode **(required)**                      |
-| `output`                    | `qrcode` | Output file path                                           |
-| `--list-formats`            | —        | List all supported output formats                          |
+| Argument                    | Default  | Description                                                      |
+|-----------------------------|----------|------------------------------------------------------------------|
+| `url`                       | —        | Text or URL to encode **(required)**                             |
+| `output`                    | `qrcode` | Output file path                                                 |
+| `--list-formats`            | —        | List all supported output formats                                |
+| `-l`, `--logo`              | `False`  | Include a logo in the QR code.                                   |
 | `-f`, `--format`            | `.png`   | Output format (auto-detected from the file extension if omitted) |
-| `-bw`, `--border-width`     | `2`      | Width of the white border surrounding the QR code           |
-| `-bs`, `--box-size`         | `10`     | Size (in pixels) of each box/module of the QR code           |
+| `-bw`, `--border-width`     | `2`      | Width of the white border surrounding the QR code                |
+| `-bs`, `--box-size`         | `10`     | Size (in pixels) of each box/module of the QR code               |
 
 ## 🚀 Usage
 
