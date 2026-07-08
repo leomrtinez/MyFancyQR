@@ -93,26 +93,32 @@ python qr_generator.py https://example.com --format pdf --box-size 15 --border-w
 
 ```
 
-### About logo add-ons:
-MyFancyQR enable you to add your logo in the middle of the QR code. Few logos exists in the `./logo` repository
-If you want to add one of them (easy), just use the function as follow : 
+### About Logo Add-ons
+
+MyFancyQR allows you to embed a logo in the center of your QR code. Several ready-to-use logos are available in the `./logo` directory.
+
+To use one of the built-in logos, simply specify its name with the `--logo` option:
 
 ```bash
-# See available logos
+# List all available built-in logos
 python qr_generator.py --help
 
-# For example, if you want to generate a QR code for Github page: 
+# Example: Generate a QR code pointing to a GitHub repository
 python qr_generator.py https://github.com/user/repo --logo Github
-
 ```
 
-Otherwise just add the path to your logo: 
+You can also use your own custom logo by providing the path to a PNG file:
+
 
 ```bash
-# For example, if you want to generate a QR code for a wikipedia page: 
+# Example: Generate a QR code pointing to a Wikipedia page
 python qr_generator.py https://en.wikipedia.org/wiki/QR_code --logo /Volumes/My_Disk/Images/logo_wikipedia.png file_name
 
 ```
+
+**Note:** Custom logos must be provided as `.png` files.
+
+**Warning:** For best results, use a high-resolution image. Small logos may appear pixelated when embedded into the QR code.
 
 ## 🤝 Contributing
 
