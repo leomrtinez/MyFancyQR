@@ -1,6 +1,6 @@
 # 📷 MyFancyQR
 
-MyFancyQR is a lightweight command-line tool that generates QR codes from any text or URL, with support for multiple output formats (PNG, SVG, PDF, JPEG, and more) and customizable styling options.
+MyFancyQR is a lightweight command-line tool that generates fancy colored QR codes from any text or URL, with support for multiple output formats (PNG, SVG, PDF, JPEG, and more) and customizable styling options.
 
 ![License](https://img.shields.io/badge/license-GPLv3-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.14%2B-blue.svg)
@@ -19,7 +19,7 @@ MyFancyQR is a lightweight command-line tool that generates QR codes from any te
 
 - Generate QR codes from any text or URL
 - Export to multiple formats: PNG, SVG, PDF, JPEG, BMP, WEBP, TIFF, or EPS (terminal preview)
-- Customizable box size and border width
+- Customizable box size, border width, logo and even colors
 - Simple, dependency-light CLI
 
 ## 📥 Installation
@@ -43,6 +43,7 @@ You will need the following packages:
 ```bash
 conda install conda-forge::qrcode
 conda install anaconda::pillow
+conda install matplotlib
 ```
 </details>
 
@@ -55,7 +56,8 @@ Otherwise you can also install it via pip:
 <summary>📦 Using pip</summary>
 
 ```bash
-pip install qrcode[pil]
+pip install qrcode[pil] matplotlib
+
 ```
 </details>
 
@@ -70,8 +72,9 @@ pip install qrcode[pil]
 | `-f`, `--format`            | `.jpg`   | Output format (auto-detected from the file extension if omitted)     |
 | `-bw`, `--border-width`     | `1`      | Width of the white border surrounding the QR code                    |
 | `-bs`, `--box-size`         | `25`     | Size (in pixels) of each box/module of the QR code                   |
-
-
+| `-bc`, `--back-color`       | `white`  | Background color for the QR code (choice between all matplotlib [colors](https://matplotlib.org/stable/gallery/color/named_colors.html))  |
+| `-fc`, `--fill-color`       | `black`  | Fill color for the QR code (choice between all matplotlib [colors](https://matplotlib.org/stable/gallery/color/named_colors.html)) |
+|
 
 ## 🚀 Usage
 

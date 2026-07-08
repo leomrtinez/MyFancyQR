@@ -1,8 +1,10 @@
 import argparse
 import sys
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageOps
 import qrcode
 import qrcode.image.svg
+from matplotlib import colors as mcolors
+import pdb
 
 SUPPORTED_FORMATS = ["png", "pdf", "svg", "jpg", "jpeg", "bmp", "webp", "tiff", "eps"]
 AVAILABLE_LOGOS = {"Github": "logo/Github.png",
@@ -10,7 +12,39 @@ AVAILABLE_LOGOS = {"Github": "logo/Github.png",
                     "Youtube": "logo/Youtube.png",
                     "Wikipedia": "logo/Wikipedia.png"}  # Example set of available logos
 
-def generate_qrcode_without_logo(data: str, output_path: str = None, fmt: str = "png", box_size: int = 25, border_width: int = 1):
+
+
+AVAILABLE_COLORS = {
+    name: tuple(int(c * 255) for c in mcolors.to_rgb(hex_color))
+    for name, hex_color in mcolors.CSS4_COLORS.items()
+}
+
+
+def _invert_logo_colors(logo: Image.Image) -> Image.Image:
+    """
+    Invert the RGB channels of a logo image while preserving its
+    alpha (transparency) channel, if any.
+    """
+    if logo.mode in ("RGBA", "LA"):
+        # Split channels: keep alpha untouched, invert the rest
+        *color_channels, alpha = logo.split()
+        rgb = Image.merge(logo.mode[:-1], color_channels)  # "RGB" or "L"
+        inverted_rgb = ImageOps.invert(rgb.convert("RGB"))
+        inverted = inverted_rgb.convert(logo.mode[:-1])
+        inverted.putalpha(alpha)
+        return inverted
+    else:
+        return ImageOps.invert(logo.convert("RGB"))
+#pdb.set_trace()
+
+def generate_qrcode_without_logo(data: str,
+                                output_path: str = None,
+                                fmt: str = "png",
+                                box_size: int = 25,
+                                border_width: int = 1, 
+                                back_color: str = "white",
+                                fill_color: str = "black"
+                                ):
     """
     Generate a QR code from a text/URL and save it in the requested format.
     """
@@ -41,8 +75,10 @@ def generate_qrcode_without_logo(data: str, output_path: str = None, fmt: str = 
     )
     qr.add_data(data)
     qr.make(fit=True)
-    img = qr.make_image(fill_color="black", back_color="white")
-
+    
+    img = qr.make_image(back_color= AVAILABLE_COLORS[back_color], fill_color=AVAILABLE_COLORS[fill_color])
+    
+    
     if fmt == "png":
         img.save(output_path)
     elif fmt == "pdf":
@@ -62,7 +98,7 @@ def generate_qrcode_without_logo(data: str, output_path: str = None, fmt: str = 
     print(f"QR code generated: {output_path}")
     return None
 
-
+from PIL import Image, ImageDraw
 
 
 def generate_qrcode_with_logo(
@@ -72,11 +108,13 @@ def generate_qrcode_with_logo(
     box_size: int = 25,
     border_width: int = 1,
     logo_path: str = None,
+    back_color: str = "white",
+    fill_color: str = "black",    
+    circle_border_thickness: int = 3,
 ):
     """
-    Generate a QR code with a logo embedded in the center (on a white
-    circular background for better contrast), and save it in the
-    requested format.
+    Generate a QR code with a logo embedded in the center, placed on a
+    white circular background with a thin border for better contrast.
     """
     fmt = fmt.lower()
 
@@ -92,6 +130,7 @@ def generate_qrcode_with_logo(
     if logo_path in AVAILABLE_LOGOS.keys():
         logo_path = AVAILABLE_LOGOS[logo_path]
 
+
     # Higher error correction is required so the QR code stays
     # scannable even with part of it covered by the logo
     qr = qrcode.QRCode(
@@ -102,7 +141,7 @@ def generate_qrcode_with_logo(
     qr.add_data(data)
     qr.make(fit=True)
 
-    qr_img = qr.make_image(fill_color="black", back_color="white").convert("RGB")
+    qr_img = qr.make_image(back_color= AVAILABLE_COLORS[back_color], fill_color=AVAILABLE_COLORS[fill_color]).convert("RGB")
     qr_width, qr_height = qr_img.size
 
     try:
@@ -113,18 +152,37 @@ def generate_qrcode_with_logo(
     # Resize logo to ~25% of the QR code width
     logo_size = int(qr_width * 0.25)
     logo = logo.resize((logo_size, logo_size))
+   
+    # Invert logo colors if the background is black (or very dark),
+    # so a dark logo stays visible on a dark background
+    if back_color.lower() in ("black", "#000000", "#000"):
+        logo = _invert_logo_colors(logo)
 
-    # --- Draw a white circle behind the logo for contrast ---
+
+
     circle_radius = int(logo_size * 0.65)  # slightly larger than the logo
     circle_center = (qr_width // 2, qr_height // 2)
 
     draw = ImageDraw.Draw(qr_img)
+
+    # --- Outer circle (border color) ---
+    draw.ellipse(
+        [
+            (circle_center[0] - circle_radius - circle_border_thickness,
+             circle_center[1] - circle_radius - circle_border_thickness),
+            (circle_center[0] + circle_radius + circle_border_thickness,
+             circle_center[1] + circle_radius + circle_border_thickness),
+        ],
+        fill=fill_color,
+    )
+
+    # --- Inner circle (white background for the logo) ---
     draw.ellipse(
         [
             (circle_center[0] - circle_radius, circle_center[1] - circle_radius),
             (circle_center[0] + circle_radius, circle_center[1] + circle_radius),
         ],
-        fill="white",
+        fill=back_color,
     )
 
     # Compute position to center the logo
@@ -138,6 +196,8 @@ def generate_qrcode_with_logo(
         qr_img.paste(logo, pos, mask=logo)
     else:
         qr_img.paste(logo, pos)
+
+
 
     if fmt == "png":
         qr_img.save(output_path)
@@ -155,7 +215,7 @@ def generate_qrcode_with_logo(
         qr_img.save(output_path, "EPS")
 
     print(f"QR code with logo generated: {output_path}")
-
+    return None
 
 
 
@@ -211,7 +271,21 @@ def main():
         choices=list(AVAILABLE_LOGOS.keys())
     )
 
+    parser.add_argument(
+        "-bc",
+        "--back-color",
+        type=str,
+        default="white",
+        help="Background color for the QR code (default: white)"
+    )
 
+    parser.add_argument(
+        "-fc",
+        "--fill-color",
+        type=str,
+        default="black",
+        help="Fill color for the QR code (default: black)"
+    )
 
 
 
@@ -241,9 +315,9 @@ def main():
 
 
     if not args.logo:
-        generate_qrcode_without_logo(args.url, args.output, fmt, args.box_size, args.border_width)
+        generate_qrcode_without_logo(args.url, args.output, fmt, args.box_size, args.border_width, args.back_color, args.fill_color)
     else:
-        generate_qrcode_with_logo(args.url, args.output, fmt, args.box_size, args.border_width, args.logo)
+        generate_qrcode_with_logo(args.url, args.output, fmt, args.box_size, args.border_width, args.logo, args.back_color, args.fill_color)
 
 
 
