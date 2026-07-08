@@ -115,7 +115,7 @@ python qr_generator.py https://example.com example/basic
 ```bash
 python qr_generator.py https://example.com example/basic_colored -bc orange -pc red
 ```
-![Colored QR code](example/basic_colored.png)
+<img src="example/basic_colored.png" alt="Colored QR code" width="50">
 
 **QR code with logo**
 ```bash
