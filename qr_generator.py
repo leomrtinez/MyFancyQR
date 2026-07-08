@@ -10,7 +10,7 @@ AVAILABLE_LOGOS = {"Github": "logo/Github.png",
                     "Youtube": "logo/Youtube.png",
                     "Wikipedia": "logo/Wikipedia.png"}  # Example set of available logos
 
-def generate_qrcode_without_logo(data: str, output_path: str = None, fmt: str = "png", box_size: int = 10, border_width: int = 2):
+def generate_qrcode_without_logo(data: str, output_path: str = None, fmt: str = "png", box_size: int = 25, border_width: int = 1):
     """
     Generate a QR code from a text/URL and save it in the requested format.
     """
@@ -69,8 +69,8 @@ def generate_qrcode_with_logo(
     data: str,
     output_path: str,
     fmt: str = "png",
-    box_size: int = 10,
-    border_width: int = 2,
+    box_size: int = 25,
+    border_width: int = 1,
     logo_path: str = None,
 ):
     """
@@ -190,16 +190,16 @@ def main():
         "-bs",
         "--box-size",
         type=int,
-        default=10,
-        help="Box size for the QR code (default: 10)"
+        default=25,
+        help="Box size for the QR code (default: 25)"
     )
 
     parser.add_argument(
         "-bw",
         "--border-width",
         type=int,
-        default=2,
-        help="Border width for the QR code (default: 2)"
+        default=1,
+        help="Border width for the QR code (default: 1)"
     )
 
     parser.add_argument(

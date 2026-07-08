@@ -68,8 +68,8 @@ pip install qrcode[pil]
 | `--list-formats`            | —        | List all supported output formats                                    |
 | `-l`, `--logo`              | `None`   | Include a logo in the QR code. Some are provided in the `logo` repo  |
 | `-f`, `--format`            | `.jpg`   | Output format (auto-detected from the file extension if omitted)     |
-| `-bw`, `--border-width`     | `2`      | Width of the white border surrounding the QR code                    |
-| `-bs`, `--box-size`         | `10`     | Size (in pixels) of each box/module of the QR code                   |
+| `-bw`, `--border-width`     | `1`      | Width of the white border surrounding the QR code                    |
+| `-bs`, `--box-size`         | `25`     | Size (in pixels) of each box/module of the QR code                   |
 
 ## 🚀 Usage
 
