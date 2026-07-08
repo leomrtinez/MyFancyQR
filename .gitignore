@@ -1,5 +1,6 @@
 # We ignore all the possible outputs 
-*.png
+#*.png
+*.svg
 *.pdf
 *.jpg
 *.jpeg

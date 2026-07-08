@@ -175,7 +175,7 @@ def main():
     parser.add_argument(
         "-f", "--format",
         help="Output format (auto-detected from the file extension if not provided)", 
-        default="png",
+        default="jpg",
         choices=SUPPORTED_FORMATS
     )
 
@@ -233,7 +233,7 @@ def main():
         if args.output:
             fmt = args.output.rsplit(".", 1)[-1]  # infer format from the extension
         else :
-            fmt = "png"  # default format
+            fmt = "jpg"  # default format
 
 
     if not args.output:
