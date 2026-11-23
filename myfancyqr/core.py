@@ -278,7 +278,9 @@ def _encode(data: str, ecc: str) -> tuple[list[list[bool]], int]:
     qr.add_data(data)
     try:
         qr.make(fit=True)
-    except DataOverflowError:
+    except (DataOverflowError, ValueError):
+        # qrcode < 8 raises DataOverflowError; qrcode >= 8 lets best_fit()
+        # pick version 41 and raises "ValueError: Invalid version (was 41...)".
         raise ValueError(
             f"data too long for a QR code at error correction {ecc} "
             f"({len(data.encode('utf-8'))} bytes)"
