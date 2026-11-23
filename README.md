@@ -1,9 +1,11 @@
 # 📷 MyFancyQR
 
-MyFancyQR is a lightweight command-line tool that generates fancy colored QR codes from any text or URL, with support for multiple output formats (PNG, SVG, PDF, JPEG, and more) and customizable styling options.
+MyFancyQR is a lightweight tool that generates fancy coloured QR codes from any text or URL, with an optional logo in the centre, and exports them to PNG, SVG, PDF, JPEG and more. Version 2 turns the original script into a small Python package with a reusable API, while keeping every v1 command working.
 
 ![License](https://img.shields.io/badge/license-GPLv3-blue.svg)
-![Python](https://img.shields.io/badge/python-3.14%2B-blue.svg)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
+
+> Looking for the original single-script version? It is preserved under the tag [`v1-final`](https://github.com/leomrtinez/MyFancyQR/tree/v1-final) and the branch [`v1`](https://github.com/leomrtinez/MyFancyQR/tree/v1).
 
 ## 📑 Table of Contents
 
@@ -11,6 +13,8 @@ MyFancyQR is a lightweight command-line tool that generates fancy colored QR cod
 - [Installation](#-installation)
 - [Configuration](#️-configuration)
 - [Usage](#-usage)
+- [Python API](#-python-api)
+- [Development](#-development)
 - [Contributing](#-contributing)
 - [License](#-license)
 - [Contact](#-contact)
@@ -18,9 +22,12 @@ MyFancyQR is a lightweight command-line tool that generates fancy colored QR cod
 ## ✨ Features
 
 - Generate QR codes from any text or URL
-- Export to multiple formats: PNG, SVG, PDF, JPEG, BMP, WEBP, TIFF, or EPS (terminal preview)
-- Customizable box size, border width, logo and even colors
-- Simple, dependency-light CLI
+- Export to PNG, SVG, PDF, JPEG, BMP, WEBP, TIFF or EPS; the format is inferred from the file extension
+- Any CSS colour name or hex code for modules and background
+- Centre logo (built-in or your own image), with size, backdrop shape and automatic inversion on dark backgrounds
+- Vector SVG output that keeps colours, sizes and the logo
+- Diagnostics: QR version, output size, contrast ratio, warnings, and an optional read-back check
+- Two dependencies only: `qrcode` and `Pillow`
 
 ## 📥 Installation
 
@@ -31,75 +38,70 @@ git clone git@github.com:leomrtinez/MyFancyQR.git
 cd MyFancyQR
 ```
 
-### Requirements
-
-
-If you already have a Conda environment:
 <details>
 <summary>🐍 Using Conda</summary>
 
-You will need the following packages:
-
 ```bash
-conda install conda-forge::qrcode
-conda install anaconda::pillow
-conda install matplotlib
+conda env create -f environment.yml
+conda activate myfancyqr
 ```
 </details>
-
-
-
-
-Otherwise you can also install it via pip:
 
 <details>
 <summary>📦 Using pip</summary>
 
 ```bash
-pip install qrcode[pil] matplotlib
-
+python -m venv .venv && source .venv/bin/activate
+pip install -e .              # CLI and Python API
+pip install -e ".[scan]"      # + read-back check (OpenCV)
+pip install -e ".[dev]"       # + test suite
 ```
 </details>
 
+Installing the package adds a `myfancyqr` command. Without installing, `python qr_generator.py ...` and `python -m myfancyqr ...` work from the repository root as long as `qrcode` and `Pillow` are available.
+
 ## ⚙️ Configuration
 
-| Argument                    | Default  | Description                                                          |
-|-----------------------------|----------|----------------------------------------------------------------------|
-| `url`                       | —        | Text or URL to encode **(required)**                                 |
-| `output`                    | `qrcode` | Output file path                                                     |
-| `--list-formats`            | —        | List all supported output formats                                    |
-| `-l`, `--logo`              | `None`   | Include a logo in the QR code. Some are provided in the `logo` repo  |
-| `-f`, `--format`            | `.jpg`   | Output format (auto-detected from the file extension if omitted)     |
-| `-bw`, `--border-width`     | `1`      | Width of the white border surrounding the QR code                    |
-| `-bs`, `--box-size`         | `25`     | Size (in pixels) of each box/module of the QR code                   |
-| `-bc`, `--back-color`       | `white`  | Background color for the QR code (choice between all matplotlib [colors](https://matplotlib.org/stable/gallery/color/named_colors.html))  |
-| `-pc`, `--pixel-color`       | `black`  | Pixel color for the QR code (choice between all matplotlib [colors](https://matplotlib.org/stable/gallery/color/named_colors.html)) |
+| Argument | Default | Description |
+|---|---|---|
+| `url` | this repository | Text or URL to encode |
+| `output` | `qrcode` | Output file path; the extension selects the format |
+| `-f`, `--format` | from extension, else `jpg` | Output format; overrides the extension |
+| `-ls`, `--list-formats` | — | List supported output formats |
+| `-bs`, `--box-size` | `25` | Size of one module, in pixels |
+| `-bw`, `--border-width` | `1` | Quiet zone around the code, in modules (4 recommended by ISO/IEC 18004) |
+| `-bc`, `--back-color` | `white` | Background colour: CSS name ([list](https://developer.mozilla.org/en-US/docs/Web/CSS/named-color)) or hex code |
+| `-pc`, `--pixel-color` | `black` | Module colour: CSS name or hex code |
+| `-ec`, `--error-correction` | `L`, or `H` with a logo | Error-correction level: `L`, `M`, `Q` or `H` |
+| `-l`, `--logo` | none | Built-in logo name or path to an image |
+| `--logo-size` | `25` | Logo size, in % of the code width (5–40) |
+| `--logo-backdrop` | `circle` | Shape behind the logo: `circle`, `square` or `none` |
+| `--invert-logo` | `auto` | Invert the logo colours: `auto` (on dark backgrounds), `always`, `never` |
+| `--list-logos` | — | List built-in logos |
+| `--check` | — | Decode the result to verify it (needs `opencv-python-headless`) |
+| `-V`, `--version` | — | Print the version |
 
-**Note:** if `back-color` is defined as black, `pixel-color` will automatically
-be set to white unless you specify otherwise (e.g. `-pc limegreen`). Likewise,
-if you specify `pixel-color` as white without specifying `back-color`,
-`back-color` will automatically be set to black.
+**Note:** if `back-color` is black and `pixel-color` is left black, the modules become white; likewise, white modules on the default white background switch the background to black.
 
-
+Warnings (small quiet zone, low contrast, inverted colours, logo too large for the error-correction level) are printed on stderr; the code is still generated.
 
 ## 🚀 Usage
 
 ```bash
-# The most simple way to use it. If no output is specified, the default file_name is qrcode
+# Simplest use. Without an output name the file is called qrcode.jpg
 python qr_generator.py https://example.com
 
-# Standard generation. If no format is specified (neither via extension nor option), the defaults format will be set to .jpg
-python qr_generator.py https://example.com file_name
+# The extension selects the format
+python qr_generator.py https://example.com file_name.png
 
-# Force a format different from the extension
-python qr_generator.py https://example.com file_name --format pdf
+# Force a format different from the extension (writes file_name.pdf)
+python qr_generator.py https://example.com file_name.png --format pdf
 
-# See available formats
-python qr_generator.py --list-formats
+# Hex colours, ISO quiet zone, vector output
+python qr_generator.py https://example.com file_name.svg -pc '#0a3d91' -bc '#fff6e5' -bw 4
 
-# Other options
-python qr_generator.py https://example.com --format pdf --box-size 15 --border-width 1 --back-color black --pixel-color white  file_name
-
+# Check that the result can be read back
+python qr_generator.py https://example.com file_name.png -l Github --check
 ```
 
 ### 🖼️ Gallery
@@ -110,7 +112,6 @@ python qr_generator.py https://example.com example/basic
 ```
 <img src="example/basic.png" alt="Basic QR code" width="300">
 
-
 **Colored QR code**
 ```bash
 python qr_generator.py https://example.com example/basic_colored -bc orange -pc red
@@ -119,44 +120,72 @@ python qr_generator.py https://example.com example/basic_colored -bc orange -pc 
 
 **QR code with logo**
 ```bash
-python qr_generator.py https://example.com example/logo -l Github 
+python qr_generator.py https://example.com example/logo -l Github
 ```
-
 <img src="example/leomrtinez.png" alt="QR code with logo" width="300">
 
-
-**QR code with logo (inversed colors)**
+**QR code with logo (inverted colors)**
 ```bash
-python qr_generator.py https://en.wikipedia.org/wiki/QR_code example/qr_code_wiki_r --logo ./logo/Wikipedia.png -bc black
+python qr_generator.py https://en.wikipedia.org/wiki/QR_code example/qr_code_wiki_r --logo Wikipedia -bc black
 ```
-<img src="example/qr_code_wiki_r.png" alt="QR code with logo inversed" width="300">
+<img src="example/qr_code_wiki_r.png" alt="QR code with logo inverted" width="300">
 
-### About Logo Add-ons
+### About logos
 
-MyFancyQR allows you to embed a logo in the center of your QR code. Several ready-to-use logos are available in the `./logo` directory.
-
-To use one of the built-in logos, simply specify its name with the `--logo` option:
+Built-in logos live in [`myfancyqr/logos/`](myfancyqr/logos); list them with `--list-logos` and use them by name (case-insensitive):
 
 ```bash
-# List all available built-in logos
-python qr_generator.py --help
-
-# Example: Generate a QR code pointing to a GitHub repository
 python qr_generator.py https://github.com/user/repo --logo Github
 ```
 
-You can also use your own custom logo by providing the path to a PNG file:
-
+Any image Pillow can open works as a custom logo (PNG with transparency gives the best result); its aspect ratio is preserved:
 
 ```bash
-# Example: Generate a QR code pointing to a Wikipedia page
-python qr_generator.py https://en.wikipedia.org/wiki/QR_code --logo /Volumes/My_Disk/Images/logo_wikipedia.png file_name
-
+python qr_generator.py https://en.wikipedia.org/wiki/QR_code --logo ~/Pictures/my_logo.png file_name.png
 ```
 
-**Note:** Custom logos must be provided as `.png` files.
+With a logo, the error correction defaults to `H` so the code stays readable. For best results, use a high-resolution image and keep the logo at 30 % of the width or less.
 
-**Warning:** For best results, use a high-resolution image. Small logos may appear pixelated when embedded into the QR code.
+## 🐍 Python API
+
+```python
+from myfancyqr import QRConfig, analyse, render, save, to_svg
+
+cfg = QRConfig(
+    "https://example.com",
+    fill_color="#0a3d91",
+    back_color="white",
+    box_size=20,
+    border=4,
+    logo="Github",
+)
+
+img = render(cfg)                    # PIL.Image.Image (RGB)
+svg = to_svg(cfg)                    # SVG document as a string
+path = save(cfg, "out/example.pdf")  # format from the extension
+info = analyse(cfg)                  # version, size, contrast, warnings...
+print(info.version, info.pixel_size, info.warnings)
+```
+
+## 🧪 Development
+
+```bash
+pip install -e ".[dev]"
+pytest
+```
+
+The layout is:
+
+```
+myfancyqr/
+├── core.py      # QRConfig, build_matrix, render, to_svg, save, analyse, decode_check
+├── cli.py       # command-line interface (v1-compatible)
+└── logos/       # built-in logos
+qr_generator.py  # v1 entry point, kept for compatibility
+tests/
+```
+
+See [CHANGELOG.md](CHANGELOG.md) for what changed since v1.
 
 ## 🤝 Contributing
 
