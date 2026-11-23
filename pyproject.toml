@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "myfancyqr"
+dynamic = ["version"]
+description = "Fancy coloured QR codes (PNG, SVG, PDF...) with logos, from the command line or a desktop GUI."
+readme = "README.md"
+license = "GPL-3.0-only"
+requires-python = ">=3.10"
+authors = [{ name = "Léo Martinez", email = "martinez.leo.work@gmail.com" }]
+dependencies = [
+    "qrcode>=7.4",
+    "pillow>=10.1",
+]
+
+[project.optional-dependencies]
+# Desktop GUI (macOS: pulls in PyObjC through pywebview).
+gui = ["pywebview>=5.0"]
+# Read-back check of generated codes (CLI --check, GUI "Decodes" badge).
+scan = ["opencv-python-headless>=4.8", "numpy"]
+dev = ["pytest>=7", "opencv-python-headless>=4.8", "numpy"]
+
+[project.scripts]
+myfancyqr = "myfancyqr.cli:main"
+
+[project.gui-scripts]
+myfancyqr-gui = "myfancyqr.gui.app:main"
+
+[project.urls]
+Homepage = "https://github.com/leomrtinez/MyFancyQR"
+Issues = "https://github.com/leomrtinez/MyFancyQR/issues"
+
+[tool.setuptools.dynamic]
+version = { attr = "myfancyqr.__version__" }
+
+[tool.setuptools.packages.find]
+include = ["myfancyqr*"]
+
+[tool.setuptools.package-data]
+myfancyqr = ["logos/*.png", "gui/static/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

@@ -1,0 +1,17 @@
+# Conda environment for MyFancyQR v2 (CLI + GUI + tests).
+#   conda env create -f environment.yml
+#   conda activate myfancyqr
+name: myfancyqr
+channels:
+  - conda-forge
+dependencies:
+  - python>=3.10
+  - qrcode>=7.4
+  - pillow>=10.1
+  - numpy
+  - pytest
+  - pip
+  - pip:
+      - pywebview>=5.0                  # GUI (pulls PyObjC on macOS)
+      - opencv-python-headless>=4.8     # optional read-back check
+      - -e .                            # this package, editable
