@@ -5,6 +5,7 @@
 The single script becomes the `myfancyqr` package. Every v1 command line keeps working through `qr_generator.py`.
 
 ### Added
+- Desktop app (`python -m myfancyqr.gui`): live preview, diagnostics, export in every format, copy to clipboard, saved styles, macOS translucent window, light and dark modes, and a browser mode.
 - Python API: `QRConfig`, `render`, `to_svg`, `save`, `analyse`, `decode_check`.
 - CLI options `--error-correction`, `--logo-size`, `--logo-backdrop`, `--invert-logo`, `--list-logos`, `--check`, `--version`.
 - Warnings for a small quiet zone, low contrast, inverted colours and a logo too large for the error-correction level.

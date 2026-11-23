@@ -1,6 +1,8 @@
 # 📷 MyFancyQR
 
-MyFancyQR is a lightweight tool that generates fancy coloured QR codes from any text or URL, with an optional logo in the centre, and exports them to PNG, SVG, PDF, JPEG and more. Version 2 turns the original script into a small Python package with a reusable API, while keeping every v1 command working.
+MyFancyQR is a lightweight tool that generates fancy coloured QR codes from any text or URL, with an optional logo in the centre, and exports them to PNG, SVG, PDF, JPEG and more. Version 2 turns the original script into a small Python package with a reusable API and a macOS desktop app, while keeping every v1 command working.
+
+<img src="docs/gui-light.png" alt="MyFancyQR desktop app, light appearance" width="720">
 
 ![License](https://img.shields.io/badge/license-GPLv3-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue.svg)
@@ -13,6 +15,7 @@ MyFancyQR is a lightweight tool that generates fancy coloured QR codes from any 
 - [Installation](#-installation)
 - [Configuration](#️-configuration)
 - [Usage](#-usage)
+- [Desktop app](#️-desktop-app)
 - [Python API](#-python-api)
 - [Development](#-development)
 - [Contributing](#-contributing)
@@ -27,7 +30,8 @@ MyFancyQR is a lightweight tool that generates fancy coloured QR codes from any 
 - Centre logo (built-in or your own image), with size, backdrop shape and automatic inversion on dark backgrounds
 - Vector SVG output that keeps colours, sizes and the logo
 - Diagnostics: QR version, output size, contrast ratio, warnings, and an optional read-back check
-- Two dependencies only: `qrcode` and `Pillow`
+- Desktop app with a live preview (macOS look, works in a browser too)
+- Two dependencies for the CLI and API: `qrcode` and `Pillow`
 
 ## 📥 Installation
 
@@ -53,6 +57,7 @@ conda activate myfancyqr
 ```bash
 python -m venv .venv && source .venv/bin/activate
 pip install -e .              # CLI and Python API
+pip install -e ".[gui]"       # + desktop app (pywebview)
 pip install -e ".[scan]"      # + read-back check (OpenCV)
 pip install -e ".[dev]"       # + test suite
 ```
@@ -146,6 +151,32 @@ python qr_generator.py https://en.wikipedia.org/wiki/QR_code --logo ~/Pictures/m
 
 With a logo, the error correction defaults to `H` so the code stays readable. For best results, use a high-resolution image and keep the logo at 30 % of the width or less.
 
+## 🖥️ Desktop app
+
+```bash
+pip install -e ".[gui,scan]"     # once (the conda environment already includes both)
+python -m myfancyqr.gui          # or: myfancyqr-gui
+```
+
+The app shows a live preview as you edit the content, colours, module size, quiet zone, error correction and logo. Under the preview it reports the QR version, the output size in pixels, the contrast ratio and whether the code can be read back (with OpenCV installed), plus warnings when a setting makes the code harder to scan.
+
+- **Export…** (⌘E) opens a save dialog in the format selected in the bottom bar.
+- **Copy** (⇧⌘C) puts a full-resolution PNG on the clipboard.
+- **Presets** saves the current style (everything but the content) and reapplies it later. Styles are stored in `~/Library/Application Support/MyFancyQR/presets.json`.
+- The appearance follows the system light or dark mode.
+
+<img src="docs/gui-dark.png" alt="MyFancyQR desktop app, dark appearance" width="720">
+
+The app is designed for macOS, where the window uses the system translucency and merges its title bar with the sidebar. If that window styling misbehaves on your macOS version, `--native-titlebar` keeps the standard title bar. pywebview also runs on Linux and Windows, without the translucency.
+
+**Browser mode.** `python -m myfancyqr.gui --browser` serves the same interface on `http://127.0.0.1:8765` without pywebview; files are uploaded and downloaded instead of using native dialogs. It also works on a remote machine over SSH:
+
+```bash
+ssh -L 8765:127.0.0.1:8765 my-server                   # on your computer
+python -m myfancyqr.gui --browser --no-open            # on the server
+# then open http://127.0.0.1:8765
+```
+
 ## 🐍 Python API
 
 ```python
@@ -180,6 +211,7 @@ The layout is:
 myfancyqr/
 ├── core.py      # QRConfig, build_matrix, render, to_svg, save, analyse, decode_check
 ├── cli.py       # command-line interface (v1-compatible)
+├── gui/         # desktop app: api.py (Python side), app.py (window), devserver.py (browser mode), static/
 └── logos/       # built-in logos
 qr_generator.py  # v1 entry point, kept for compatibility
 tests/
