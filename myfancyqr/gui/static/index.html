@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>MyFancyQR</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="window glass">
+
+  <aside class="sidebar glass" aria-label="Settings">
+    <div class="titlebar-space pywebview-drag-region"></div>
+
+    <section>
+      <h2 class="label"><label for="data">Content</label></h2>
+      <textarea id="data" rows="3" spellcheck="false" autocomplete="off" placeholder="https://example.com"></textarea>
+      <p class="hint" id="dataMeta">&nbsp;</p>
+    </section>
+
+    <section>
+      <h2 class="label">Colors</h2>
+      <div class="row">
+        <label for="fillHex" class="row-label">Pixels</label>
+        <input id="fill" type="color" class="swatch" aria-label="Pick pixel colour">
+        <input id="fillHex" class="field mono" type="text" spellcheck="false" autocomplete="off">
+      </div>
+      <div class="row">
+        <label for="backHex" class="row-label">Background</label>
+        <input id="back" type="color" class="swatch" aria-label="Pick background colour">
+        <input id="backHex" class="field mono" type="text" spellcheck="false" autocomplete="off">
+      </div>
+      <button id="swap" class="cap small" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4 3 8l4 4M3 8h14M17 20l4-4-4-4M21 16H7"/></svg>
+        Swap colors
+      </button>
+    </section>
+
+    <section>
+      <h2 class="label">Geometry</h2>
+      <div class="row">
+        <label for="boxSize" class="row-label">Module size</label>
+        <input id="boxSize" type="range" min="1" max="50" step="1">
+        <output for="boxSize" id="boxSizeOut" class="value"></output>
+      </div>
+      <div class="row">
+        <label for="border" class="row-label">Quiet zone</label>
+        <input id="border" type="range" min="0" max="10" step="1">
+        <output for="border" id="borderOut" class="value"></output>
+      </div>
+      <div class="row">
+        <span class="row-label" id="eccLabel">Error corr.</span>
+        <div class="segmented" id="ecc" role="group" aria-labelledby="eccLabel" data-key="ecc">
+          <button type="button" data-value="auto">Auto</button>
+          <button type="button" data-value="L">L</button>
+          <button type="button" data-value="M">M</button>
+          <button type="button" data-value="Q">Q</button>
+          <button type="button" data-value="H">H</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="logoSection">
+      <h2 class="label">Logo</h2>
+      <div class="pills" id="logoPills" role="group" aria-label="Logo"></div>
+      <input id="logoFile" type="file" accept="image/*" hidden>
+      <div class="logo-options">
+        <div class="row">
+          <label for="logoScale" class="row-label">Size</label>
+          <input id="logoScale" type="range" min="10" max="35" step="1">
+          <output for="logoScale" id="logoScaleOut" class="value"></output>
+        </div>
+        <div class="row">
+          <span class="row-label" id="backdropLabel">Backdrop</span>
+          <div class="segmented" id="logoBackdrop" role="group" aria-labelledby="backdropLabel" data-key="logoBackdrop">
+            <button type="button" data-value="circle">Circle</button>
+            <button type="button" data-value="square">Square</button>
+            <button type="button" data-value="none">None</button>
+          </div>
+        </div>
+        <div class="row">
+          <span class="row-label" id="invertLabel">Invert</span>
+          <div class="segmented" id="invertLogo" role="group" aria-labelledby="invertLabel" data-key="invertLogo">
+            <button type="button" data-value="auto">Auto</button>
+            <button type="button" data-value="always">On</button>
+            <button type="button" data-value="never">Off</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </aside>
+
+  <main class="main">
+    <header class="toolbar">
+      <div class="title pywebview-drag-region">
+        <h1>MyFancyQR</h1>
+        <span id="subtitle">&nbsp;</span>
+      </div>
+      <div class="spacer pywebview-drag-region"></div>
+      <div class="capsule glass">
+        <div class="menu-anchor">
+          <button id="presetsBtn" class="cap" type="button" aria-haspopup="true" aria-expanded="false">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h10M4 18h6"/></svg>Presets
+          </button>
+          <div id="presetsMenu" class="menu glass" hidden>
+            <ul id="presetList"></ul>
+            <form id="presetForm">
+              <label for="presetName" class="sr-only">Preset name</label>
+              <input id="presetName" class="field" type="text" placeholder="Name this style" autocomplete="off">
+              <button class="cap small" type="submit">Save</button>
+            </form>
+          </div>
+        </div>
+        <button id="copyBtn" class="cap" type="button" title="Copy image (⇧⌘C)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></svg>Copy
+        </button>
+      </div>
+      <button id="exportBtn" class="cap primary" type="button" title="Export (⌘E)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Export…
+      </button>
+    </header>
+
+    <div class="stage pywebview-drag-region">
+      <div class="plate glass">
+        <img id="preview" alt="QR code preview">
+        <div id="errorBox" class="error" role="alert" hidden></div>
+      </div>
+    </div>
+
+    <div class="chips" aria-live="polite">
+      <span class="chip glass" id="chipVersion"></span>
+      <span class="chip glass" id="chipSize"></span>
+      <span class="chip glass" id="chipContrast"></span>
+      <span class="chip glass" id="chipDecode"></span>
+    </div>
+    <ul id="warnings" class="warnings" aria-live="polite"></ul>
+
+    <div class="formatbar glass segmented" id="format" role="group" aria-label="Export format" data-key="format"></div>
+  </main>
+</div>
+
+<div id="toast" class="toast glass" role="status" hidden>
+  <span id="toastText"></span>
+  <button id="toastAction" class="cap small" type="button" hidden></button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
