@@ -1,16 +1,27 @@
-# We ignore all the possible outputs 
-#*.png
-*.svg
-*.pdf
-*.jpg
-*.jpeg
-*.bmp
-*.webp
-*.tiff
-*.eps
+# Generated QR codes (CLI default output location: repo root only)
+/*.png
+/*.svg
+/*.pdf
+/*.jpg
+/*.jpeg
+/*.bmp
+/*.webp
+/*.tiff
+/*.eps
 
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+build/
+dist/
 
+# OS
 ._*
 .DS_Store
 
-personnal_data/*
+# Local data
+personnal_data/
